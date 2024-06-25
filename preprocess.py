@@ -5,18 +5,21 @@ import matplotlib.pyplot as plt
 data = pd.read_csv('Watches.csv')
 
 # Select the first 10 rows
-data_subset = data.head(10)
+data_subset = data.head(10).copy()  # Ensure a copy to avoid SettingWithCopyWarning
 
-# Convert 'Price_old' and 'Price_new' to numeric format
-data_subset['Price_old'] = data_subset['Price_old'].replace('[\$,]', '', regex=True).astype(float)
-data_subset['Price_new'] = data_subset['Price_new'].replace('[\$,]', '', regex=True).astype(float)
-
+# Convert 'Price_old' and 'Price_new' to numeric format using .loc
+data_subset.loc[:, 'Price_old'] = data_subset['Price_old'].replace(r'[\$,]', '', regex=True).astype(float)
+data_subset.loc[:, 'Price_new'] = data_subset['Price_new'].replace(r'[\$,]', '', regex=True).astype(float)
 
 # Calculate discount as a percentage
-data_subset['Discount'] = ((data_subset['Price_old'] - data_subset['Price_new']) / data_subset['Price_old'] * 100).round(1)
+data_subset.loc[:, 'Discount'] = ((data_subset['Price_old'] - data_subset['Price_new']) / data_subset['Price_old'] * 100).round(1)
 
 # Sort data by 'Price_old' ascending
 data_subset_sorted = data_subset.sort_values(by='Price_old').reset_index(drop=True)
+
+# Print the first row to verify
+print(data_subset_sorted.iloc[0])
+
 
 # Plotting the first 10 rows
 plt.figure(figsize=(12, 8))
@@ -44,4 +47,7 @@ plt.ylabel('Price (USD)')
 plt.legend()
 plt.tight_layout()
 plt.grid(True)
-plt.show()
+
+# Save the plot as an image
+plt.savefig('plot.png')
+plt.close()
