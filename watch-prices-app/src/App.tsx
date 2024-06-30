@@ -1,18 +1,19 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import {Home} from './pages/home';
+import { routeMap } from './routes/routeMap';
 
-const App = () => {
-  return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          {/* Add more routes here if needed */}
-        </Routes>
-      </div>
-    </Router>
-  );
+const App: React.FC = () => {
+	return (
+		<Router>
+			<div className="App">
+				<Routes>
+					{Object.values(routeMap).map(route => (
+						<Route key={route.id} path={route.path} element={<route.component />} />
+					))}
+				</Routes>
+			</div>
+		</Router>
+	);
 };
 
 export default App;

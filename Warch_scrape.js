@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
+const path = require('path'); // Import path module
 
 async function Scrape() {
 	try {
@@ -38,7 +39,7 @@ async function Scrape() {
 			console.log('No popup to close');
 		}
 
-		let pagesToScrape = 3;
+		let pagesToScrape = 1;
 		let currentPage = 1;
 		let data = [];
 
@@ -52,12 +53,13 @@ async function Scrape() {
 
 				items.forEach((item) => {
 					try {
-						if (item.querySelector('div.product-details')) {
+						if (item.querySelector('div.productItemBlock')) {
 							results.push({
 								title: item.querySelector('.name-out-brand').innerText,
-								url: item.querySelector('a.productName-link').href,
-								price_old: item.querySelector('div.was-wrapper').innerText,
-								price_new: item.querySelector('div.now-price').innerText,
+								img: item.querySelector('div.productImageBlock img.productImg').src,
+								url: item.querySelector('div.product-details a.productName-link').href,
+								price_old: item.querySelector('div.product-details div.was-wrapper').innerText,
+								price_new: item.querySelector('div.product-details div.now-price').innerText,
 							});
 						}
 					} catch (error) {
@@ -71,7 +73,7 @@ async function Scrape() {
 			if (currentPage < pagesToScrape) {
 				// Wait for 3 seconds before clicking the next page
 				await delay(3000);
-				if(currentPage == 1){
+				if (currentPage == 1) {
 					await page.waitForSelector('a.page-link');
 					await page.click('a.page-link');
 				} else {
@@ -80,39 +82,20 @@ async function Scrape() {
 				}
 			}
 			currentPage++;
-
 		}
 		await browser.close()
-
-		//for discount , convert string to numbers and do the formula
-		// for (let i = 0; i < data.length; i++) {
-		// 	price_new = data[i].price_new.substring(0, data[i].price_new.indexOf(','));
-		// 	price_new = price_new.replace('.', ',')
-
-		// 	price_old = data[i].price_old.substring(0, data[i].price_old.indexOf(','));
-		// 	price_old = price_old.replace('.', ',')
-
-		// 	data[i].discount = (((parseInt(price_old.split(',').join('')) - parseInt(price_new.split(',').join(''))) / parseInt(price_old.split(',').join(''))) * 100).toFixed(1)
-		// }
-
-		// for top discount
-		// top_discount = 0
-		// position = 0
-		// for (let i = 0; i < data.length; i++) {
-		// 	if (parseFloat(data[i].discount) >= parseFloat(top_discount)) {
-		// 		top_discount = parseFloat(data[i].discount)
-		// 		position = i
-		// 	}
-		// }
-		// data[position].top_discount = 'TOP_DISCOUNT'
 
 		let csvContent = data.map(element => {
 			return Object.values(element).map(item => `"${item}"`).join(',')
 		}).join("\n")
 
-		fs.writeFile('Watches.csv', "Title,Url,Price_old,Price_new" + '\n' + csvContent, 'utf8', function (err) {
+		const outputPath = path.join(__dirname, 'watch-prices-app', 'public', 'Watches.csv');
+
+		fs.writeFile(outputPath, "Title,Img,Url,Price_old,Price_new" + '\n' + csvContent, 'utf8', function (err) {
 			if (err) {
 				console.log('Some error occurred - file either not saved or corrupted.')
+			} else {
+				console.log('File saved successfully in public folder');
 			}
 		})
 	}
