@@ -3,6 +3,7 @@ import numpy as np
 import random
 import datetime
 import os
+import re
 
 def generate_organic_price_series(base_price, num_days, fluctuation_range=5, inflation_rate=0.0001):
     """Generate a price series for a given number of days with a steady increase due to inflation."""
@@ -42,7 +43,9 @@ def create_timeseries_dataframe(csv_file, num_days=730, fluctuation_range=5, inf
         })
 
         # Save the DataFrame to the dictionary
-        watch_title = row['Title'].replace(' ', '_').replace('/', '_')  # Clean the title for filename
+        # Clean the title for filename by removing invalid characters
+        watch_title = re.sub(r'[<>:"/\\|?*]', '_', row['Title'])
+        watch_title = watch_title.replace(' ', '_')
         timeseries_data[watch_title] = watch_timeseries
 
     return timeseries_data
