@@ -4,11 +4,20 @@ import random
 import datetime
 import os
 
-def generate_random_price_series(base_price, num_days, fluctuation_range=50):
-    """Generate a random price series for a given number of days with larger price fluctuations."""
-    return [round(base_price + random.uniform(-fluctuation_range, fluctuation_range), 2) for _ in range(num_days)]
+def generate_organic_price_series(base_price, num_days, fluctuation_range=5, inflation_rate=0.0001):
+    """Generate a price series for a given number of days with a steady increase due to inflation."""
+    prices = []
+    current_price = base_price
+    for _ in range(num_days):
+        # Apply a daily inflation rate
+        current_price *= (1 + inflation_rate)
+        # Add some random fluctuation
+        current_price += random.uniform(-fluctuation_range, fluctuation_range)
+        # Append the rounded price to the list
+        prices.append(round(current_price, 2))
+    return prices
 
-def create_timeseries_dataframe(csv_file, num_days=730, fluctuation_range=50):
+def create_timeseries_dataframe(csv_file, num_days=730, fluctuation_range=5, inflation_rate=0.0001):
     # Read the CSV file
     df = pd.read_csv(csv_file)
 
@@ -23,13 +32,13 @@ def create_timeseries_dataframe(csv_file, num_days=730, fluctuation_range=50):
     for index, row in df.iterrows():
         # Extract base old price and remove any dollar signs or commas
         base_price = float(row['Price_old'].replace('$', '').replace(',', ''))
-        random_prices = generate_random_price_series(base_price, num_days + 1, fluctuation_range)  # Ensure same length as date_range
+        organic_prices = generate_organic_price_series(base_price, num_days + 1, fluctuation_range, inflation_rate)  # Ensure same length as date_range
 
         # Create a DataFrame for the current watch's timeseries
         watch_timeseries = pd.DataFrame({
             'Date': date_range,
             'Title': row['Title'],
-            'Price_old': random_prices
+            'Price_old': organic_prices
         })
 
         # Save the DataFrame to the dictionary
@@ -41,8 +50,8 @@ def create_timeseries_dataframe(csv_file, num_days=730, fluctuation_range=50):
 # Define the path to your input CSV file
 csv_file_path = './Watches.csv'
 
-# Create the timeseries DataFrames for each watch with larger price fluctuations over 2 years
-timeseries_data = create_timeseries_dataframe(csv_file_path, num_days=730, fluctuation_range=100)
+# Create the timeseries DataFrames for each watch with more organic price increases over 2 years
+timeseries_data = create_timeseries_dataframe(csv_file_path, num_days=730, fluctuation_range=5, inflation_rate=0.0001)
 
 # Create output directory if it doesn't exist
 output_dir = 'watch_timeseries_data'
