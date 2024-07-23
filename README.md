@@ -25,29 +25,25 @@ The Watch Prices App fetches watch data from a CSV file, displays detailed infor
 
 Follow these steps to set up and run the project on your local machine:
 
-1. **Clone the Repository**
+**Clone the Repository**
 
    ```
    git clone https://github.com/your-username/watch-prices-app.git
    cd watch-prices-app
    ```
-   
-2. **Install Dependencies**
 
-Make sure you have Node.js installed. Then run:
+**For Scraping, Formatting, and Forecasting**
 
-  ```
-  npm install
-  ```
-3. Install Python Dependencies
+1. Install Python Dependencies
 
 Make sure you have Python installed. Install the required Python packages using:
 
 ```
+cd data-scrapping
 pip install pandas numpy matplotlib fbprophet
 ```
 
-4. Scraping, Formatting, and Forecasting
+2. Scraping, Formatting, and Forecasting
 
 To gather watch data, generate time series data, and create forecasts, follow these steps:
 
@@ -63,7 +59,19 @@ To gather watch data, generate time series data, and create forecasts, follow th
   ```
   .\run_all.bat
   ```
-5.    **Run the Development Server**
+
+
+**For React**
+
+1. **Install Dependencies**
+
+Make sure you have Node.js installed. Then run:
+
+  ```
+  cd watch-prices-app
+  npm install
+  ```
+2.    **Run the Development Server**
 
 Start the development server with:
 
