@@ -10,15 +10,12 @@ const Routing = () => {
                     <Route
                         key={'route-' + route}
                         path={routeMap[route].path}
-                        element={
-                            routeMap[route].page
-                        }
+                        element={routeMap[route].page}
                     />
                 );
             })}
 
             {/* <Route path="*" element={<Page404 />} /> */}
-
         </Routes>
     );
 };

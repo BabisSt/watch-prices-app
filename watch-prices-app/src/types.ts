@@ -5,5 +5,4 @@ export interface WatchData {
     Url: string;
     Price_old: string;
     Price_new: string;
-  }
-  
+}
