@@ -1,6 +1,5 @@
 # Watch Prices App
-
-Welcome to the Watch Prices App! This is an experimental project aimed at exploring and learning new technologies. The app allows users to view watch details and analyze price forecasts with interactive charts.
+This is an experimental project aimed at exploring and learning new technologies. The app allows users to view watch details and analyze price forecasts with interactive charts.
 
 ## Project Overview
 
